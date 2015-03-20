@@ -56,11 +56,7 @@ public class HubbleRestClient {
         String output = "";
         try {
             ClientRequest request = new ClientRequest(requestURL);
-            //request.accept(MediaType.TEXT_PLAIN);
-
-
             ClientResponse<String> response = request.get(String.class);
-            //System.out.println("Response status: "+response.getStatus());
             if (response.getStatus() != 200) {
                 throw new RuntimeException("Failed : HTTP error code : "
                         + response.getResponseStatus());

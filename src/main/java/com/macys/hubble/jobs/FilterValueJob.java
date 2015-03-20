@@ -21,9 +21,9 @@ public class FilterValueJob implements Job {
             String serviceUrl = "http://182.74.5.6/HubbleWebService/rest/hublservice/filtervalues";
             String tableInfoUrl = "http://182.74.5.6/HubbleWebService/rest/UpdateInfoService/tableinfo/filter_value";
 
-            /*HubbleRestClient hubbleRestClient = new HubbleRestClient();
+            HubbleRestClient hubbleRestClient = new HubbleRestClient();
             String tableInfoResponseStr = hubbleRestClient.tableInfoService(tableInfoUrl);
-            System.out.println("Updated timestamp for filter_value table: " + tableInfoResponseStr);*/
+            System.out.println("Updated timestamp for filter_value table: " + tableInfoResponseStr);
 
 
             Connection conn = DatabaseUtils.getDBConnection();
@@ -45,8 +45,8 @@ public class FilterValueJob implements Job {
             String filterValueJsonStr = DatabaseUtils.resultSetToJson(conn, query);
             System.out.println("JSON Resultset from Macy's database : " + filterValueJsonStr);
 
-            /*String responseStr = hubbleRestClient.callHubbleService(filterValueJsonStr,serviceUrl);
-            System.out.println("Response from Hubl service : " + responseStr);*/
+            String responseStr = hubbleRestClient.callHubbleService(filterValueJsonStr,serviceUrl);
+            System.out.println("Response from Hubl service : " + responseStr);
             System.out.println("==========All Filter value Job Job ended @ " + new Date()+"=================");
 
         } catch (Exception e) {

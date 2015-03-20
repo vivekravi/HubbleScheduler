@@ -27,7 +27,6 @@ public class ActiveProjectProductsJob implements Job {
 
 
             Connection conn = DatabaseUtils.getDBConnection();
-            //String query = "select project_id as \"projID\", project_name as \"projName\", project_desc as \"projDesc\", start_date as \"startDate\", end_date as \"endDate\", TO_CHAR(updated_ts, 'YYYY-MM-DD HH24:MM:SS') as \"updatedTs\" from stars_project where end_date > sysdate and updated_ts > TO_TIMESTAMP('" + tableInfoResponseStr + "','YYYY-MM-DD HH24:MI:SS')";
             String query = "select a.product_id as \"productId\", p.project_id as \"projectId\", a.approval_type_code as \"approvalTypeCode\", " +
                     "TO_CHAR(a.approval_date, 'YYYY-MM-DD') as \"approvalDate\", " +
                     "a.approval_state as \"approvalState\", a.approver_name as \"approver\", " +
@@ -35,13 +34,25 @@ public class ActiveProjectProductsJob implements Job {
                     "TO_CHAR(a.updated_ts, 'YYYY-MM-DD HH24:MI:SS') as \"updatedTs\"  " +
                     "from STARS_PRODUCT_APPROVAL a INNER JOIN stars_product p ON " +
                     "p.product_id = a.product_id AND a.APPROVAL_STATE='Pending' " +
-                    "and a.product_id in (select product_id from stars_product prod INNER JOIN stars_project proj ON prod.project_id = proj.PROJECT_ID)";
-
-            //String countQuery = "select count(*) from ("+query+") x";
-           // int count = DatabaseUtils.executeCount(conn, countQuery);
-           // System.out.println("Query result count : " + count);
-
+                    "and a.product_id in (select product_id from stars_product prod INNER JOIN stars_project proj ON prod.project_id = proj.PROJECT_ID) order by p.project_id";
             System.out.println("All Active project products Query: "+query);
+            String countQuery = "select count(*) from ("+query+") x";
+            int count = DatabaseUtils.executeCount(conn, countQuery);
+            System.out.println("Query result count : " + count);
+            String sql = "select * from ("+query+") where rownum between %d and %d";
+            int firstRow = 1, rowCount = 1000;
+            while (count>1000){
+                String sqlQuery = String.format(sql, firstRow, rowCount);
+                Connection connection = DatabaseUtils.getDBConnection();
+                String projJson = DatabaseUtils.resultSetToJson(connection, sqlQuery);
+                System.out.println("ResultSetJson: "+projJson);
+                firstRow+=rowCount;
+                rowCount+=1000;
+                count=count-1000;
+
+            }
+
+
             /*int rowCountMin = 0;
             int rowCountMax = 1000;
             while(count>1000){
@@ -55,9 +66,9 @@ public class ActiveProjectProductsJob implements Job {
                 else
                     rowCountMax+=count;
 
-            }*/
+            }
             String gmmJsonStr = DatabaseUtils.resultSetToJson(conn, query);
-            System.out.println("JSON Resultset from Macy's database : " + gmmJsonStr);
+            System.out.println("JSON Resultset from Macy's database : " + gmmJsonStr);*/
 
             /*String responseStr = hubbleRestClient.callHubbleService(gmmJsonStr,serviceUrl);
             System.out.println("Response from Hubl service : " + responseStr);*/

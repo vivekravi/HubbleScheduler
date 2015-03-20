@@ -21,9 +21,9 @@ public class ProjectBucketCountJob implements Job {
                 String serviceUrl = "http://182.74.5.6/HubbleWebService/rest/hublservice/projectcount";
                 String tableInfoUrl = "http://182.74.5.6/HubbleWebService/rest/UpdateInfoService/tableinfo/project_bucket_count";
 
-                /*HubbleRestClient hubbleRestClient = new HubbleRestClient();
+                HubbleRestClient hubbleRestClient = new HubbleRestClient();
                 String tableInfoResponseStr = hubbleRestClient.tableInfoService(tableInfoUrl);
-                System.out.println("Updated timestamp for project_bucket_count table: " + tableInfoResponseStr);*/
+                System.out.println("Updated timestamp for project_bucket_count table: " + tableInfoResponseStr);
 
 
                 Connection conn = DatabaseUtils.getDBConnection();
@@ -35,8 +35,8 @@ public class ProjectBucketCountJob implements Job {
                 String projectBucketCountJsonStr = DatabaseUtils.resultSetToJson(conn, query);
                 System.out.println("JSON Resultset from Macy's database : " + projectBucketCountJsonStr);
 
-            /*String responseStr = hubbleRestClient.callHubbleService(projectBucketCountJsonStr,serviceUrl);
-            System.out.println("Response from Hubl service : " + responseStr);*/
+            String responseStr = hubbleRestClient.callHubbleService(projectBucketCountJsonStr,serviceUrl);
+            System.out.println("Response from Hubl service : " + responseStr);
                 System.out.println("==========All Project Bucket Count Job Job ended @ " + new Date()+"=================");
 
             } catch (Exception e) {

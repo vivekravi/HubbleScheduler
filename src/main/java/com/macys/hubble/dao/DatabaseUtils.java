@@ -29,6 +29,7 @@ public class DatabaseUtils {
         List<Map<String, Object>> listOfMaps = null;
         try {
             QueryRunner queryRunner = new QueryRunner();
+
             listOfMaps = queryRunner.query(connection, query, new MapListHandler());
             System.out.println("Resultset Size:"+listOfMaps.size());
             System.out.println("SQL Query: "+query);
@@ -44,6 +45,7 @@ public class DatabaseUtils {
         int count=0;
         try {
             Statement stmt = connection.createStatement();
+            stmt.setFetchSize(1000);
             ResultSet rs = stmt.executeQuery(query);
             rs.next();
             count = rs.getInt(1);
@@ -60,8 +62,6 @@ public class DatabaseUtils {
         String rsJson = "";
         try {
             ResultSet rs = connection.createStatement().executeQuery(query);
-            //rsJson = DSL.using(connection).fetch(rs).formatJSON();
-
             ObjectMapper mapper = new ObjectMapper();
             rsJson = mapper.writeValueAsString(rs);
 
@@ -77,9 +77,7 @@ public class DatabaseUtils {
         return rsJson;
     }
     public static Connection getDBConnection() {
-        //See your driver documentation for the proper format of this string :
         String DB_CONN_STRING = "jdbc:oracle:thin:@sl99d0z1:1521:sdt2mcom";
-        //Provided by your driver documentation. In this case, a MySql driver is used :
         String DRIVER_CLASS_NAME = "oracle.jdbc.OracleDriver";
         String USER_NAME = "sdt";
         String PASSWORD = "sdt";
@@ -108,14 +106,8 @@ public class DatabaseUtils {
     public static String toJSONString(Object object) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("yyyy-MM-dd");
-        //gsonBuilder.setDateFormat("dd-MMM-yyyy HH:mm:ss a");
         Gson gson = gsonBuilder.create();
         System.out.println(object.toString());
-        /*Gson gson = new GsonBuilder()
-                .registerTypeAdapter(oracle.sql.TIMESTAMP.class, new DateTypeAdapter())
-                .registerTypeAdapter(java.sql.Date.class, new DateTypeAdapter()).create();*/
-
-        //Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
         return gson.toJson(object);
     }
 

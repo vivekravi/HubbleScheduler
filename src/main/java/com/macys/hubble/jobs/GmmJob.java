@@ -21,20 +21,20 @@ public class GmmJob implements Job {
             String serviceUrl = "http://182.74.5.6/HubbleWebService/rest/hublservice/gmm";
             String tableInfoUrl = "http://182.74.5.6/HubbleWebService/rest/UpdateInfoService/tableinfo/all_gmm";
 
-            /*HubbleRestClient hubbleRestClient = new HubbleRestClient();
+
+            HubbleRestClient hubbleRestClient = new HubbleRestClient();
             String tableInfoResponseStr = hubbleRestClient.tableInfoService(tableInfoUrl);
-            System.out.println("Updated timestamp for Projects table: " + tableInfoResponseStr);*/
+            System.out.println("Updated timestamp for Projects table: " + tableInfoResponseStr);
 
 
             Connection conn = DatabaseUtils.getDBConnection();
-            //String query = "select project_id as \"projID\", project_name as \"projName\", project_desc as \"projDesc\", start_date as \"startDate\", end_date as \"endDate\", TO_CHAR(updated_ts, 'YYYY-MM-DD HH24:MM:SS') as \"updatedTs\" from stars_project where end_date > sysdate and updated_ts > TO_TIMESTAMP('" + tableInfoResponseStr + "','YYYY-MM-DD HH24:MI:SS')";
             String query = "SELECT gmm_id as \"gmmId\", gmm_name as \"gmmName\" FROM STARS_CORP_GMM";
             System.out.println("All GMM Query: "+query);
             String gmmJsonStr = DatabaseUtils.resultSetToJson(conn, query);
             System.out.println("JSON Resultset from Macy's database : " + gmmJsonStr);
 
-            /*String responseStr = hubbleRestClient.callHubbleService(gmmJsonStr,serviceUrl);
-            System.out.println("Response from Hubl service : " + responseStr);*/
+            String responseStr = hubbleRestClient.callHubbleService(gmmJsonStr,serviceUrl);
+            System.out.println("Response from Hubl service : " + responseStr);
             System.out.println("==========All GMM Job ended @ " + new Date()+"=================");
 
         } catch (Exception e) {
